@@ -3,8 +3,8 @@
 // @namespace    https://github.com/Dragowynd/ProxerHTML5
 // @version      1.0.0
 // @description  Replaces Proxer.Me Flash Players with Video.js HTML5 Player
-// @updateURL    https://raw.githubusercontent.com/Dragowynd/ProxerHTML5/master/user.js
-// @downloadURL  https://raw.githubusercontent.com/Dragowynd/ProxerHTML5/master/user.js
+// @updateURL    https://raw.githubusercontent.com/Dragowynd/ProxerHTML5/master/proxerhtml5.user.js
+// @downloadURL  https://raw.githubusercontent.com/Dragowynd/ProxerHTML5/master/proxerhtml5.user.js
 // @author       Dragowynd
 // @match        http*://proxer.me/watch/*
 // @grant        unsafeWindow
