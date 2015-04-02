@@ -19,23 +19,18 @@
 	loadScript("http://vjs.zencdn.net/4.12/video.js", function () {
 		loadScript("http://cdn.sc.gl/videojs-hotkeys/latest/videojs.hotkeys.min.js", function () {});
 	});
-
 	setGlobals();
 	appendEventListener();
 })();
 
 function setGlobals() {
 	var g = function () {
-		window.streamsrc = "";
 		window.scrindex = 0;
-		window.htmlplayerevent = new CustomEvent('htmlplayer', {
-				'detail' : streamsrc
-			});
 		window.scrloadevent = new CustomEvent('scrload', {
 				'detail' : scrindex
 			});
 		window.activestream = 0;
-		window.toDOM = function(str) {
+		window.toDOM = function (str) {
 			var div = document.createElement("div");
 			div.innerHTML = str;
 			return div.firstElementChild;
@@ -50,8 +45,10 @@ function appendEventListener() {
 		var flplayer = "";
 		GM_xmlhttpRequest({
 			method : "GET",
-			url : streamsrc,
+			url : e.detail,
 			onload : function (response) {
+				alert(response);
+				alert(response.responseText);
 				flplayer = response.responseText;
 				flplayer = flplayer.replace(/html.*?(?=>)/gi, "div");
 				flplayer = flplayer.replace(/head.*?(?=>)/gi, "div");
@@ -178,8 +175,9 @@ function getStreamAjax(i) {
 				var allowedstreams = ["Proxer-Stream"];
 				if (allowedstreams.indexOf(streams[i].name) >= 0) {
 					activestream = i;
-					streamsrc = toDOM(data.toString()).getAttribute("src");
-					document.body.dispatchEvent(htmlplayerevent);
+					document.body.dispatchEvent(new CustomEvent("htmlplayer", {
+							'detail' : toDOM(data.toString()).getAttribute("src")
+						}));
 				} else {
 					$('.wStream').append(data);
 				}
