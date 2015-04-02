@@ -6,7 +6,8 @@
 // @updateURL    https://raw.githubusercontent.com/Dragowynd/ProxerHTML5/master/proxerhtml5.user.js
 // @downloadURL  https://raw.githubusercontent.com/Dragowynd/ProxerHTML5/master/proxerhtml5.user.js
 // @author       Dragowynd
-// @match        http*://proxer.me/watch/*
+// @match        http://proxer.me/watch/*
+// @include		 https://proxer.me/watch/*
 // @grant        unsafeWindow
 // @grant        GM_xmlhttpRequest
 // @grant        GM_log
