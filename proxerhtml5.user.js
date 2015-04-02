@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         Proxer HTML5 Player
 // @namespace    https://github.com/Dragowynd/ProxerHTML5
-// @version      1.0.0
+// @version      1.0.1
 // @description  Replaces Proxer.Me Flash Players with Video.js HTML5 Player
 // @updateURL    https://raw.githubusercontent.com/Dragowynd/ProxerHTML5/master/proxerhtml5.user.js
 // @downloadURL  https://raw.githubusercontent.com/Dragowynd/ProxerHTML5/master/proxerhtml5.user.js
 // @author       Dragowynd
 // @match        http://proxer.me/watch/*
-// @include		 https://proxer.me/watch/*
+// @include      https://proxer.me/watch/*
 // @grant        unsafeWindow
 // @grant        GM_xmlhttpRequest
 // @grant        GM_log
@@ -19,12 +19,6 @@
 	loadScript("http://vjs.zencdn.net/4.12/video.js", function () {
 		loadScript("http://cdn.sc.gl/videojs-hotkeys/latest/videojs.hotkeys.min.js", function () {});
 	});
-
-	String.prototype.toDOM = function () {
-		var div = document.createElement("div");
-		div.innerHTML = this;
-		return div.firstElementChild;
-	};
 
 	setGlobals();
 	appendEventListener();
@@ -41,6 +35,11 @@ function setGlobals() {
 				'detail' : scrindex
 			});
 		window.activestream = 0;
+		window.toDOM = function(str) {
+			var div = document.createElement("div");
+			div.innerHTML = str;
+			return div.firstElementChild;
+		};
 	};
 	addJS_Node(getStreamAjax); //Overrides the original getStreamAjax
 	addJS_Node(null, null, g);
@@ -64,7 +63,7 @@ function appendEventListener() {
 				var scriptswosrc = [];
 				var scriptswsrc = [];
 				while (match = sr.exec(flplayer)) {
-					var s = match.toString().toDOM();
+					var s = toDOM(match.toString());
 					if (s.src) {
 						scriptswsrc.push(s);
 					} else {
@@ -79,7 +78,7 @@ function appendEventListener() {
 					document.body.appendChild(tempdiv);
 				}
 				document.getElementById("dummycontainer").innerHTML = "";
-				document.getElementById("dummycontainer").appendChild(flplayer.toString().toDOM());
+				document.getElementById("dummycontainer").appendChild(toDOM(flplayer.toString()));
 				var loadScrwosrc = function () {
 					scriptswosrc.forEach(function (entry) {
 						addJS_Node(entry.innerHTML);
@@ -179,7 +178,7 @@ function getStreamAjax(i) {
 				var allowedstreams = ["Proxer-Stream"];
 				if (allowedstreams.indexOf(streams[i].name) >= 0) {
 					activestream = i;
-					streamsrc = data.toString().toDOM().getAttribute("src");
+					streamsrc = toDOM(data.toString()).getAttribute("src");
 					document.body.dispatchEvent(htmlplayerevent);
 				} else {
 					$('.wStream').append(data);
