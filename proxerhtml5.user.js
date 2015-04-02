@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Proxer HTML5 Player
 // @namespace    https://github.com/Dragowynd/ProxerHTML5
-// @version      1.0.1
+// @version      1.0.2
 // @description  Replaces Proxer.Me Flash Players with Video.js HTML5 Player
 // @updateURL    https://raw.githubusercontent.com/Dragowynd/ProxerHTML5/master/proxerhtml5.user.js
 // @downloadURL  https://raw.githubusercontent.com/Dragowynd/ProxerHTML5/master/proxerhtml5.user.js
@@ -47,8 +47,6 @@ function appendEventListener() {
 			method : "GET",
 			url : e.detail,
 			onload : function (response) {
-				alert(response);
-				alert(response.responseText);
 				flplayer = response.responseText;
 				flplayer = flplayer.replace(/html.*?(?=>)/gi, "div");
 				flplayer = flplayer.replace(/head.*?(?=>)/gi, "div");
