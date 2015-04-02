@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Proxer HTML5 Player
 // @namespace    https://github.com/Dragowynd/ProxerHTML5
-// @version      1.0.2
+// @version      1.0.3
 // @description  Replaces Proxer.Me Flash Players with Video.js HTML5 Player
 // @updateURL    https://raw.githubusercontent.com/Dragowynd/ProxerHTML5/master/proxerhtml5.user.js
 // @downloadURL  https://raw.githubusercontent.com/Dragowynd/ProxerHTML5/master/proxerhtml5.user.js
@@ -43,69 +43,72 @@ function setGlobals() {
 function appendEventListener() {
 	document.body.addEventListener("htmlplayer", function (e) {
 		var flplayer = "";
-		GM_xmlhttpRequest({
-			method : "GET",
-			url : e.detail,
-			onload : function (response) {
-				flplayer = response.responseText;
-				flplayer = flplayer.replace(/html.*?(?=>)/gi, "div");
-				flplayer = flplayer.replace(/head.*?(?=>)/gi, "div");
-				flplayer = flplayer.replace(/body.*?(?=>)/gi, "div");
-				flplayer = flplayer.replace(/\n/gi, " ");
-				flplayer = flplayer.replace(/<!--.*?-->/gi, " ");
-				var sr = /<script.*?>.*?<\/script>/gi;
-				var match;
-				var scriptswosrc = [];
-				var scriptswsrc = [];
-				while (match = sr.exec(flplayer)) {
-					var s = toDOM(match.toString());
-					if (s.src) {
-						scriptswsrc.push(s);
-					} else {
-						scriptswosrc.push(s);
+		setTimeout(function () {
+			GM_xmlhttpRequest({
+				method : "GET",
+				url : e.detail,
+				onload : function (response) {
+					flplayer = response.responseText;
+					flplayer = flplayer.replace(/<!DOCTYPE html>/gi, " ");
+					flplayer = flplayer.replace(/html.*?(?=>)/gi, "div");
+					flplayer = flplayer.replace(/head.*?(?=>)/gi, "div");
+					flplayer = flplayer.replace(/body.*?(?=>)/gi, "div");
+					flplayer = flplayer.replace(/\n/gi, " ");
+					flplayer = flplayer.replace(/<!--.*?-->/gi, " ");
+					var sr = /<script.*?>.*?<\/script>/gi;
+					var match;
+					var scriptswosrc = [];
+					var scriptswsrc = [];
+					while (match = sr.exec(flplayer)) {
+						var s = toDOM(match.toString());
+						if (s.src) {
+							scriptswsrc.push(s);
+						} else {
+							scriptswosrc.push(s);
+						}
 					}
-				}
-				flplayer = flplayer.replace(sr, "");
-				if (!document.getElementById("dummycontainer")) {
-					var tempdiv = document.createElement("div");
-					tempdiv.style.display = "none";
-					tempdiv.id = "dummycontainer";
-					document.body.appendChild(tempdiv);
-				}
-				document.getElementById("dummycontainer").innerHTML = "";
-				document.getElementById("dummycontainer").appendChild(toDOM(flplayer.toString()));
-				var loadScrwosrc = function () {
-					scriptswosrc.forEach(function (entry) {
-						addJS_Node(entry.innerHTML);
-					});
-					var src = getStreamSource();
-					createPlayer(src, "video/mp4");
-					videojs("htmlstream", {}, function () {}).ready(function () {
-						this.hotkeys({
-							volumeStep : 0.1,
-							seekStep : 5,
-							enableMute : true,
-							enableFullscreen : true
+					flplayer = flplayer.replace(sr, "");
+					if (!document.getElementById("dummycontainer")) {
+						var tempdiv = document.createElement("div");
+						tempdiv.style.display = "none";
+						tempdiv.id = "dummycontainer";
+						document.body.appendChild(tempdiv);
+					}
+					document.getElementById("dummycontainer").innerHTML = "";
+					document.getElementById("dummycontainer").appendChild(toDOM(flplayer.toString()));
+					var loadScrwosrc = function () {
+						scriptswosrc.forEach(function (entry) {
+							addJS_Node(entry.innerHTML);
 						});
-					});
+						var src = getStreamSource();
+						createPlayer(src, "video/mp4");
+						videojs("htmlstream", {}, function () {}).ready(function () {
+							this.hotkeys({
+								volumeStep : 0.1,
+								seekStep : 5,
+								enableMute : true,
+								enableFullscreen : true
+							});
+						});
 
-				};
-				var loadNext = function () {
-					if (scrindex >= scriptswsrc.length) {
-						loadScrwosrc();
-						return;
-					}
-					loadScript(scriptswsrc[scrindex++].src, function () {
-						document.body.dispatchEvent(scrloadevent);
-					});
-				};
-				document.body.addEventListener('scrload', function (e) {
+					};
+					var loadNext = function () {
+						if (scrindex >= scriptswsrc.length) {
+							loadScrwosrc();
+							return;
+						}
+						loadScript(scriptswsrc[scrindex++].src, function () {
+							document.body.dispatchEvent(scrloadevent);
+						});
+					};
+					document.body.addEventListener('scrload', function (e) {
+						loadNext();
+					}, false);
 					loadNext();
-				}, false);
-				loadNext();
 
-			},
-		});
+				},
+			});
+		}, 0);
 	}, false);
 }
 
