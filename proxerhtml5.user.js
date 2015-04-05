@@ -61,7 +61,7 @@ function appendEventListener() {
 					var scriptswsrc = [];
 					while (match = sr.exec(flplayer)) {
 						var s = toDOM(match.toString());
-						if (s.src) {
+						if (s.hasAttribute("src")) {
 							scriptswsrc.push(s);
 						} else {
 							scriptswosrc.push(s);
