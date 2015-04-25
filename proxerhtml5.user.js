@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Proxer HTML5 Player
 // @namespace    https://github.com/Dragowynd/ProxerHTML5
-// @version      2.0.0
+// @version      2.0.1
 // @description  Improves the Proxer.ME HTML5 Player
 // @updateURL    https://raw.githubusercontent.com/Dragowynd/ProxerHTML5/master/proxerhtml5.user.js
 // @downloadURL  https://raw.githubusercontent.com/Dragowynd/ProxerHTML5/master/proxerhtml5.user.js
@@ -12,18 +12,27 @@
 // ==/UserScript==
 
 
-(function () {
+document.body.onload = function () {
 	loadStylesheet("http://vjs.zencdn.net/4.12/video-js.css");
 	loadScript("http://vjs.zencdn.net/4.12/video.js", function () {
 		loadScript("http://cdn.sc.gl/videojs-hotkeys/latest/videojs.hotkeys.min.js", function () {
-			var video = document.querySelector("#player_code .flowplayer video");
+			var srctag = document.querySelector("#player_code .flowplayer video").firstElementChild;
+			var src = srctag.getAttribute("src");
+			var type = srctag.getAttribute("type");
+			var video = document.createElement("video");
 			video.id = "htmlstream";
 			video.setAttribute("class", "video-js vjs-default-skin vjs-big-play-centered");
 			video.setAttribute("controls", "");
 			video.setAttribute("preload", "auto");
 			video.setAttribute("data-setups", "{}");
-            video.setAttribute("width", "728px");
+			video.setAttribute("width", "728px");
 			video.setAttribute("height", "504px");
+
+			var source = document.createElement("source");
+			source.setAttribute("src", src);
+			source.setAttribute("type", type);
+			video.appendChild(source);
+			document.body.appendChild(video);
 
 			videojs("htmlstream", {}, function () {}).ready(function () {
 				this.hotkeys({
@@ -35,7 +44,7 @@
 			});
 		});
 	});
-})();
+};
 
 function loadScript(url, callback) {
 	var head = document.getElementsByTagName('head')[0];
