@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Proxer HTML5 Player
 // @namespace    https://github.com/Dragowynd/ProxerHTML5
-// @version      2.0.2
+// @version      2.0.3
 // @description  Improves the Proxer.ME HTML5 Player
 // @updateURL    https://raw.githubusercontent.com/Dragowynd/ProxerHTML5/master/proxerhtml5.user.js
 // @downloadURL  https://raw.githubusercontent.com/Dragowynd/ProxerHTML5/master/proxerhtml5.user.js
@@ -13,8 +13,8 @@
 
 
 document.body.onload = function () {
-	loadStylesheet("http://vjs.zencdn.net/4.12/video-js.css");
-	loadScript("http://vjs.zencdn.net/4.12/video.js", function () {
+	loadStylesheet("http://vjs.zencdn.net/5.0.2/video-js.css");
+	loadScript("http://vjs.zencdn.net/5.0.2/video.js", function () {
 		loadScript("http://cdn.sc.gl/videojs-hotkeys/latest/videojs.hotkeys.min.js", function () {
 
 			var srctag = document.querySelector("#player_code .flowplayer video").firstElementChild;
