@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Proxer HTML5 Player
 // @namespace    https://github.com/Dragowynd/ProxerHTML5
-// @version      3.0.2
+// @version      3.0.3
 // @description  Improves the Proxer.ME HTML5 Player
 // @updateURL    https://raw.githubusercontent.com/Dragowynd/ProxerHTML5/master/proxerhtml5.user.js
 // @downloadURL  https://raw.githubusercontent.com/Dragowynd/ProxerHTML5/master/proxerhtml5.user.js
@@ -16,7 +16,9 @@
 
 document.body.onload = function () {
 	var css = ".video-js{font-size:10px;color:#fff}.vjs-default-skin .vjs-big-play-button{font-size:3em;line-height:2em;height:2em;width:4em;border:.06666em solid #fff;border-radius:.3em;left:50%;top:50%;margin-left:-2em;margin-top:-1em}.video-js .vjs-big-play-button,.video-js .vjs-control-bar,.video-js .vjs-menu-button .vjs-menu-content{background-color:#111;background-color:rgba(17,17,17,.7)}.video-js .vjs-slider{background-color:#2b2b2b;background-color:rgba(43,43,43,.5)}.video-js .vjs-play-progress,.video-js .vjs-slider-bar,.video-js .vjs-volume-level{background:#fff}.video-js .vjs-load-progress,.video-js .vjs-load-progress div{background:rgba(85,85,85,.9)}.video-js .vjs-playback-rate{display:none}";
-	document.getElementsByTagName('head')[0].appendChild("<style>" + css + "</style>");
+	var csstag = document.createElement("style");
+	csstag.innerHTML = css;
+	document.getElementsByTagName('head')[0].appendChild(csstag);
 	
 	var srctag = document.querySelector("#player_code .flowplayer video").firstElementChild;
 	var src = srctag.getAttribute("src");
