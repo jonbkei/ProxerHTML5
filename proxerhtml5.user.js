@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Proxer HTML5 Player
 // @namespace    https://github.com/Dragowynd/ProxerHTML5
-// @version      2.0.3
+// @version      3.0.0
 // @description  Improves the Proxer.ME HTML5 Player
 // @updateURL    https://raw.githubusercontent.com/Dragowynd/ProxerHTML5/master/proxerhtml5.user.js
 // @downloadURL  https://raw.githubusercontent.com/Dragowynd/ProxerHTML5/master/proxerhtml5.user.js
@@ -9,62 +9,35 @@
 // @match        http://stream.proxer.me/*
 // @include      https://stream.proxer.me/*
 // @grant        unsafeWindow
+// @run-at       document-end
+// @require      http://vjs.zencdn.net/5/video.js
 // ==/UserScript==
 
 
 document.body.onload = function () {
-	loadStylesheet("http://vjs.zencdn.net/5.0.2/video-js.css");
-	loadScript("http://vjs.zencdn.net/5.0.2/video.js", function () {
-		loadScript("http://cdn.sc.gl/videojs-hotkeys/latest/videojs.hotkeys.min.js", function () {
+	var css = ".video-js{font-size:10px;color:#fff}.vjs-default-skin .vjs-big-play-button{font-size:3em;line-height:2em;height:2em;width:4em;border:.06666em solid #fff;border-radius:.3em;left:50%;top:50%;margin-left:-2em;margin-top:-1em}.video-js .vjs-big-play-button,.video-js .vjs-control-bar,.video-js .vjs-menu-button .vjs-menu-content{background-color:#111;background-color:rgba(17,17,17,.7)}.video-js .vjs-slider{background-color:#2b2b2b;background-color:rgba(43,43,43,.5)}.video-js .vjs-play-progress,.video-js .vjs-slider-bar,.video-js .vjs-volume-level{background:#fff}.video-js .vjs-load-progress,.video-js .vjs-load-progress div{background:rgba(85,85,85,.9)}.video-js .vjs-playback-rate{display:none}";
+	head.append("<style>" + css + "</style>");
+	
+	var srctag = document.querySelector("#player_code .flowplayer video").firstElementChild;
+	var src = srctag.getAttribute("src");
+	var type = srctag.getAttribute("type");
 
-			var srctag = document.querySelector("#player_code .flowplayer video").firstElementChild;
-			var src = srctag.getAttribute("src");
-			var type = srctag.getAttribute("type");
+	var oldplayer = document.getElementById("player_code");
+	oldplayer.parentNode.removeChild(oldplayer);
 
-			document.getElementById("player_code").setAttribute("style", "display: none;");
+	var video = document.createElement("video");
+	video.setAttribute("id", "htmlstream");
+	video.setAttribute("class", "video-js vjs-default-skin");
+	video.setAttribute("controls", "");
+	video.setAttribute("preload", "auto");
+	video.setAttribute("width", "100%");
+	video.setAttribute("height", "100%");
 
-			var video = document.createElement("video");
-			video.id = "htmlstream";
-			video.setAttribute("class", "video-js vjs-default-skin vjs-big-play-centered");
-			video.setAttribute("controls", "");
-			video.setAttribute("preload", "auto");
-			video.setAttribute("data-setups", "{}");
-			video.setAttribute("width", "728px");
-			video.setAttribute("height", "504px");
+	var source = document.createElement("source");
+	source.setAttribute("src", src);
+	source.setAttribute("type", type);
+	video.appendChild(source);
 
-			var source = document.createElement("source");
-			source.setAttribute("src", src);
-			source.setAttribute("type", type);
-			video.appendChild(source);
+	document.body.appendChild(video);
 
-			document.body.appendChild(video);
-
-			videojs("htmlstream", {}, function () {}).ready(function () {
-				this.hotkeys({
-					volumeStep : 0.1,
-					seekStep : 5,
-					enableMute : true,
-					enableFullscreen : true
-				});
-			});
-		});
-	});
 };
-
-function loadScript(url, callback) {
-	var head = document.getElementsByTagName('head')[0];
-	var script = document.createElement('script');
-	script.type = 'text/javascript';
-	script.src = url;
-	script.onreadystatechange = callback;
-	script.onload = callback;
-	head.appendChild(script);
-}
-
-function loadStylesheet(url) {
-	var head = document.getElementsByTagName('head')[0];
-	var style = document.createElement('link');
-	style.href = url;
-	style.rel = "stylesheet";
-	head.appendChild(style);
-}
