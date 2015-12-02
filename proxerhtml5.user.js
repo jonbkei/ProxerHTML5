@@ -89,8 +89,8 @@ function doAllTheMagic(src, type) {
         videojs("htmlstream").ready(function() {
             var volume = readCookie("videojsvolume");
             var videojsvideo = document.getElementById("htmlstream_html5_api");
-            videojsvideo.volume = volume !== "" ? volume : video.volume;
-            videojsvideo.addEventListener("volumechange", function() { document.cookie="videojsvolume="+ video.volume;});
+            videojsvideo.volume = volume !== "" ? volume : videojsvideo.volume;
+            videojsvideo.addEventListener("volumechange", function() { document.cookie="videojsvolume="+ videojsvideo.volume;});
         });
         
 
