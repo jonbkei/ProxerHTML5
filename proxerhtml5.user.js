@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Proxer HTML5 Player
 // @namespace    https://github.com/Dragowynd/ProxerHTML5
-// @version      3.0.4
+// @version      3.0.5
 // @description  Improves the Proxer.ME HTML5 Player
 // @updateURL    https://raw.githubusercontent.com/Dragowynd/ProxerHTML5/master/proxerhtml5.user.js
 // @downloadURL  https://raw.githubusercontent.com/Dragowynd/ProxerHTML5/master/proxerhtml5.user.js
@@ -45,6 +45,17 @@ function loadStylesheet(url) {
 	head.appendChild(style);
 }
 
+function readCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
+
 function doAllTheMagic(src, type) {
 	window.oncontextmenu = function () {
 		return true;
@@ -74,6 +85,14 @@ function doAllTheMagic(src, type) {
 		video.appendChild(source);
 
 		document.body.appendChild(video);
+        
+        videojs("htmlstream").ready(function() {
+            var volume = readCookie("videojsvolume");
+            var videojsvideo = document.getElementById("htmlstream_html5_api");
+            videojsvideo.volume = volume !== "" ? volume : video.volume;
+            videojsvideo.addEventListener("volumechange", function() { document.cookie="videojsvolume="+ video.volume;});
+        });
+        
 
 	});
 }
